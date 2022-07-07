@@ -6,6 +6,14 @@ locals {
 
   table_name_suffix_max_byte_length = "${(local.table_name_max_length - length(local.table_name_prefix)) / 2}"
   table_name_suffix_byte_length     = "${min(local.suffix_max_byte_length, local.table_name_suffix_max_byte_length)}"
+
+  additional_tags = {
+    Description   = "The DynamoDB table for storing idgen seed"
+    Environment   = "${var.environment}"
+    Name          = "${random_id.table_name.hex}"
+    ProductDomain = "${var.product_domain}"
+    ManagedBy     = "Terraform"
+  }
 }
 
 resource "random_id" "table_name" {
@@ -24,11 +32,5 @@ resource "aws_dynamodb_table" "idgen_seed_dynamodb_table" {
     type = "N"
   }
 
-  tags {
-    Description   = "The DynamoDB table for storing idgen seed"
-    Environment   = "${var.environment}"
-    Name          = "${random_id.table_name.hex}"
-    ProductDomain = "${var.product_domain}"
-    ManagedBy     = "Terraform"
-  }
+  tags = merge(var.additional_tags, local.additional_tags)
 }

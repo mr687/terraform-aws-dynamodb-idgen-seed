@@ -19,3 +19,9 @@ variable "write_capacity" {
   type        = "string"
   default     = 5
 }
+
+variable "additional_tags" {
+  type        = "map"
+  default     = {}
+  description = "The additional aws_db_instance tags that will be merged over the default tags"
+}
